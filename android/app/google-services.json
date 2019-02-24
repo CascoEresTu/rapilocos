@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "800412728782",
+    "firebase_url": "https://rapilocos.firebaseio.com",
+    "project_id": "rapilocos",
+    "storage_bucket": "rapilocos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800412728782:android:75353640d19d1ad8",
+        "android_client_info": {
+          "package_name": "com.example.rapilocos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800412728782-71217cnsbqmtv79scnmi5ftsiv0jt061.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVjp8UPXQQZAF5IovL-coGMnxoBgVcELE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
