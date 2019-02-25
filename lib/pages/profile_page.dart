@@ -1,244 +1,309 @@
 import 'package:flutter/material.dart';
 
-class Profile extends StatefulWidget {
-  @override
-  _ProfileState createState() => _ProfileState();
-}
+class ProfilePage extends StatelessWidget {
+  ProfilePage({Key key,@required this.userId , @required this.mail, @required this.name,@required this.tipo}): super(key: key);
+  final String name ;
+  final String mail ;
+  final int tipo ;
+  final String userId ;
 
-class _ProfileState extends State<Profile> {
+  final String _followers = "173";
+  final String _posts = "24";
+  final String _scores = "450";
+
+  Widget _buildCoverImage(Size screenSize) {
+    return Container(
+      height: screenSize.height / 2.6,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/otros.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileImage() {
+    return Center(
+      child: Container(
+        width: 140.0,
+        height: 140.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/propic.jpg'),
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.circular(80.0),
+          border: Border.all(
+            color: Colors.white,
+            width: 10.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFullName() {
+    TextStyle _nameTextStyle = TextStyle(
+      fontFamily: 'Roboto',
+      color: Colors.black,
+      fontSize: 28.0,
+      fontWeight: FontWeight.w700,
+    );
+
+    return Text(
+      name,
+      style: _nameTextStyle,
+    );
+  }
+
+  Widget _buildStatus(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: Text(
+        mail,
+        style: TextStyle(
+          fontFamily: 'Spectral',
+          color: Colors.black,
+          fontSize: 20.0,
+          fontWeight: FontWeight.w300,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String count) {
+    TextStyle _statLabelTextStyle = TextStyle(
+      fontFamily: 'Roboto',
+      color: Colors.black,
+      fontSize: 16.0,
+      fontWeight: FontWeight.w200,
+    );
+
+    TextStyle _statCountTextStyle = TextStyle(
+      color: Colors.black54,
+      fontSize: 24.0,
+      fontWeight: FontWeight.bold,
+    );
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          count,
+          style: _statCountTextStyle,
+        ),
+        Text(
+          label,
+          style: _statLabelTextStyle,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatContainer() {
+    return Container(
+      height: 30.0,
+      margin: EdgeInsets.only(top: 8.0),
+      decoration: BoxDecoration(
+        color: Color(0xFFEFF4F7),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+         // _buildStatItem("Followers", _followers),
+         // _buildStatItem("Posts", _posts),
+//_buildStatItem("Scores", _scores),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBio(BuildContext context) {
+    TextStyle bioTextStyle = TextStyle(
+      fontFamily: 'Spectral',
+      fontWeight: FontWeight.w400,//try changing weight to w500 if not thin
+      fontStyle: FontStyle.italic,
+      color: Colors.black,
+      fontSize: 16.0,
+    );
+
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.all(8.0),
+      child: Text(
+        'Soy un marcianito con ganas de comerme a todo el mundo. Me encantan las baleadas y me fascina la horchata.',
+        textAlign: TextAlign.center,
+        style: bioTextStyle,
+      ),
+    );
+  }
+
+  Widget _buildSeparator(Size screenSize) {
+    return Container(
+      width: screenSize.width / 1.6,
+      height: 2.0,
+      color: Colors.black,
+      margin: EdgeInsets.only(top: 4.0),
+    );
+  }
+
+
+  Widget _buildButtons() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: InkWell(
+              onTap: () => print("followed"),
+              child: Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  color: Color(0xFF404A5C),
+                ),
+                child: Center(
+                  child: Text(
+                    "FOLLOW",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 10.0),
+          Expanded(
+            child: InkWell(
+              onTap: () => print("Message"),
+              child: Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      "MESSAGE",
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: new Image.asset('assets/rapi.png', fit: BoxFit.cover ,),
-        backgroundColor: Colors.black,
-        elevation: 0.0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.black,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.more_vert),
-          )
-        ],
-      ),
-      body: ListView(
+      body: Stack(
         children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              
-                new UserAccountsDrawerHeader(
-                  accountName: Text('Carlos Casco Valle'),
-                  accountEmail: Text('cgcascovalle@gmail.com'),
-                  currentAccountPicture: new CircleAvatar(
-                    backgroundColor: Colors.yellow[800],
-                    child: new Text('CGCV'),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                  ),
-                ),
-              
-              SizedBox(height: 25.0),
-              Text(
-                'Mark Stewart',
-                style: TextStyle(
-                    //fontFamily: 'Montserrat',
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 4.0),
-              Text(
-                'San Jose, CA',
-                style: TextStyle(
-                    //fontFamily: 'Montserrat',
-                    color: Colors.grey),
-              ),
-              Padding(
-                padding: EdgeInsets.all(30.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '24K',
-                          style: TextStyle(
-                              //   fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 5.0),
-                        Text(
-                          'FOLLOWERS',
-                          style: TextStyle(
-                              // fontFamily: 'Montserrat',
-                              color: Colors.grey),
-                        )
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '31',
-                          style: TextStyle(
-                              //  fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 5.0),
-                        Text(
-                          'TRIPS',
-                          style: TextStyle(
-                              //  fontFamily: 'Montserrat',
-                              color: Colors.grey),
-                        )
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '21',
-                          style: TextStyle(
-                              //  fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 5.0),
-                        Text(
-                          'BUCKET LIST',
-                          style: TextStyle(
-                              //  fontFamily: 'Montserrat',
-                              color: Colors.grey),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 15.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.table_chart),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.menu),
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              ),
-              //buildImages(),
-              //buildInfoDetail(),
-              //buildImages(),
-              //buildInfoDetail(),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget buildImages() {
-    return Padding(
-      padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-      child: Container(
-          height: 200.0,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              image: DecorationImage(
-                  image: AssetImage('assets/beach1.jpg'), fit: BoxFit.cover))),
-    );
-  }
-
-  Widget buildInfoDetail() {
-    return Padding(
-      padding:
-          EdgeInsets.only(left: 25.0, right: 25.0, top: 10.0, bottom: 15.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Maldives - 12 Days',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    //fontFamily: 'Montserrat',
-                    fontSize: 15.0),
-              ),
-              SizedBox(height: 7.0),
-              Row(
+          _buildCoverImage(screenSize),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
                 children: <Widget>[
-                  Text(
-                    'Teresa Soto',
-                    style: TextStyle(
-                        color: Colors.grey.shade700,
-                        // fontFamily: 'Montserrat',
-                        fontSize: 11.0),
-                  ),
-                  SizedBox(width: 4.0),
-                  Icon(
-                    Icons.timer,
-                    size: 4.0,
-                    color: Colors.black,
-                  ),
-                  SizedBox(width: 4.0),
-                  Text(
-                    '3 Videos',
-                    style: TextStyle(
-                        color: Colors.grey.shade500,
-                        //fontFamily: 'Montserrat',
-                        fontSize: 11.0),
-                  )
+                  SizedBox(height: screenSize.height / 6.4),
+                  _buildProfileImage(),
+                  _buildFullName(),
+                  _buildStatus(context),
+                  _buildStatContainer(),
+                  _buildBio(context),
+                  _buildSeparator(screenSize),
+                  SizedBox(height: 10.0),
+                  SizedBox(height: 8.0),
                 ],
-              )
-            ],
+              ),
+            ),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(width: 7.0),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  height: 20.0,
-                  width: 20.0,
-                  //  child: Image.asset('assets/navarrow.png'),
-                ),
-              ),
-              SizedBox(width: 7.0),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  height: 20.0,
-                  width: 20.0,
-                  // child: Image.asset('assets/chatbubble.png'),
-                ),
-              ),
-              SizedBox(width: 7.0),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  height: 22.0,
-                  width: 22.0,
-                  //child: Image.asset('assets/fav.png'),
-                ),
-              )
-            ],
-          )
         ],
+      ),
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the Drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            new InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: new UserAccountsDrawerHeader(
+                accountName: Text(name),
+                accountEmail: Text(mail),
+                currentAccountPicture: new CircleAvatar(
+                  backgroundColor: Colors.yellow[800],
+                  child: new Text('CGCV'),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.black),
+              title: Text('Inicio'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.shopping_cart, color: Colors.black),
+              title: Text('Carrito'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+
+            
+            ListTile(
+              leading: Icon(Icons.gps_fixed, color: Colors.black),
+              title: Text('Rastrear Pedido'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.chat_bubble, color: Colors.blue),
+              title: Text('Chat Rapiloco'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.error, color: Colors.red),
+              title: Text('Log Out'),
+              onTap: () {
+                //_signOut();
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                //Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,68 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:rapilocos/services/authentication.dart';
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rapilocos/models/todo.dart';
 import 'package:rapilocos/pages/profile_page.dart';
 import 'package:rapilocos/pages/rubros/rubro.dart';
+import 'package:rapilocos/pages/rubros/orden_especial.dart';
+
 import 'dart:async';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.auth, this.userId, this.onSignedOut})
+  HomePage(
+      {Key key,
+      this.auth,
+      this.userId,
+      this.onSignedOut,
+      this.mail,
+      this.name,
+      this.tipo})
       : super(key: key);
 
   final BaseAuth auth;
   final VoidCallback onSignedOut;
   final String userId;
 
+  final String mail;
+  final String name;
+  final int tipo;
+
   @override
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Todo> _todoList;
+  //List<Todo> _todoList;
   final String title = '';
-  String rubro = '';
-  String mail = 'empty';
-  String name = 'empty';
   
-
-
-  final FirebaseDatabase _database = FirebaseDatabase.instance;
+  final Firestore  db =Firestore.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final _textEditingController = TextEditingController();
-  StreamSubscription<Event> _onTodoAddedSubscription;
-  StreamSubscription<Event> _onTodoChangedSubscription;
-
 
   
-  Query _todoQuery;
-
   bool _isEmailVerified = false;
 
   @override
   void initState() {
-     
-    FirebaseDatabase.instance.reference().child('Users').once().
-    then((DataSnapshot snap){
-      var data = snap.value;
-      mail = data[widget.userId]['correo'];
-      name = data[widget.userId]['nombre'];
-    });  
+  
 
     super.initState();
 
     _checkEmailVerification();
-
-    _todoList = new List();
-    _todoQuery = _database
-        .reference()
-        .child("todo")
-        .orderByChild("userId")
-        .equalTo(widget.userId);
-    _onTodoAddedSubscription = _todoQuery.onChildAdded.listen(_onEntryAdded);
-    _onTodoChangedSubscription =
-        _todoQuery.onChildChanged.listen(_onEntryChanged);
+   
   }
 
   void _checkEmailVerification() async {
@@ -129,27 +119,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _onTodoAddedSubscription.cancel();
-    _onTodoChangedSubscription.cancel();
+    //_onTodoAddedSubscription.cancel();
+    //_onTodoChangedSubscription.cancel();
     super.dispose();
   }
 
-  _onEntryChanged(Event event) {
-    var oldEntry = _todoList.singleWhere((entry) {
-      return entry.key == event.snapshot.key;
-    });
-
-    setState(() {
-      _todoList[_todoList.indexOf(oldEntry)] =
-          Todo.fromSnapshot(event.snapshot);
-    });
-  }
-
-  _onEntryAdded(Event event) {
-    setState(() {
-      _todoList.add(Todo.fromSnapshot(event.snapshot));
-    });
-  }
+ 
 
   _signOut() async {
     try {
@@ -160,65 +135,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  _addNewTodo(String todoItem) {
-    if (todoItem.length > 0) {
-      Todo todo = new Todo(todoItem.toString(), widget.userId, false);
-      _database.reference().child("todo").push().set(todo.toJson());
-    }
-  }
 
-  _updateTodo(Todo todo) {
-    //Toggle completed
-    todo.completed = !todo.completed;
-    if (todo != null) {
-      _database.reference().child("todo").child(todo.key).set(todo.toJson());
-    }
-  }
-
-  _deleteTodo(String todoId, int index) {
-    _database.reference().child("todo").child(todoId).remove().then((_) {
-      print("Delete $todoId successful");
-      setState(() {
-        _todoList.removeAt(index);
-      });
-    });
-  }
-
-  _showDialog(BuildContext context) async {
-    _textEditingController.clear();
-    await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: new Row(
-              children: <Widget>[
-                new Expanded(
-                    child: new TextField(
-                  controller: _textEditingController,
-                  autofocus: true,
-                  decoration: new InputDecoration(
-                    labelText: 'Add new todo',
-                  ),
-                ))
-              ],
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              new FlatButton(
-                  child: const Text('Save'),
-                  onPressed: () {
-                    _addNewTodo(_textEditingController.text.toString());
-                    Navigator.pop(context);
-                  })
-            ],
-          );
-        });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,12 +150,16 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Card(
               color: Colors.red[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const ListTile(
                     title: Text(
-                      'Ordena de tus restaurantes favoritos!',
+                      'RESTAURANTES',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -251,12 +173,11 @@ class _HomePageState extends State<HomePage> {
                           child: new Text('Restaurantes',
                               style: TextStyle(color: Colors.white)),
                           onPressed: () {
-                            this.rubro = "restaurantes";
                             Navigator.push(
                                 context,
                                 new MaterialPageRoute(
-                                    builder: (context) =>
-                                        new Rubro(rubro: rubro)));
+                                    builder: (context) => new Rubro(
+                                        rubro: 'restaurantes', userId: widget.userId)));
                           },
                         ),
                       ],
@@ -267,12 +188,15 @@ class _HomePageState extends State<HomePage> {
             ),
             Card(
               color: Colors.blue[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const ListTile(
                     title: Text(
-                      'Pide los materiales que ocupes para trabajar en casa',
+                      'FERRETERIA',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -286,12 +210,11 @@ class _HomePageState extends State<HomePage> {
                           child: new Text('Ferreteria',
                               style: TextStyle(color: Colors.white)),
                           onPressed: () {
-                            this.rubro = "ferreteria";
                             Navigator.push(
                                 context,
                                 new MaterialPageRoute(
-                                    builder: (context) =>
-                                        new Rubro(rubro: rubro)));
+                                    builder: (context) => new Rubro(
+                                        rubro: 'ferreteria', userId: widget.userId)));
                           },
                         ),
                       ],
@@ -302,13 +225,15 @@ class _HomePageState extends State<HomePage> {
             ),
             Card(
               color: Colors.green[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const ListTile(
-                    leading: Icon(Icons.album),
                     title: Text(
-                      'Pide eso que te hace falta para la semana.',
+                      'SUPERMERCADOS',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -322,12 +247,11 @@ class _HomePageState extends State<HomePage> {
                           child: new Text('SuperMercados',
                               style: TextStyle(color: Colors.white)),
                           onPressed: () {
-                            this.rubro = "supermercados";
                             Navigator.push(
                                 context,
                                 new MaterialPageRoute(
-                                    builder: (context) =>
-                                        new Rubro(rubro: rubro)));
+                                    builder: (context) => new Rubro(
+                                        rubro: 'supermercados', userId: widget.userId)));
                           },
                         ),
                       ],
@@ -338,12 +262,15 @@ class _HomePageState extends State<HomePage> {
             ),
             Card(
               color: Colors.purple[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const ListTile(
                     title: Text(
-                      'Mejor la cartulina ahora, que a las 11 pm del domingo!',
+                      'UTILES',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -357,12 +284,11 @@ class _HomePageState extends State<HomePage> {
                           child: new Text('Utiles',
                               style: TextStyle(color: Colors.white)),
                           onPressed: () {
-                            this.rubro = "utiles";
                             Navigator.push(
                                 context,
                                 new MaterialPageRoute(
-                                    builder: (context) =>
-                                        new Rubro(rubro: rubro)));
+                                    builder: (context) => new Rubro(
+                                        rubro: 'utiles', userId: widget.userId)));
                           },
                         ),
                       ],
@@ -373,12 +299,15 @@ class _HomePageState extends State<HomePage> {
             ),
             Card(
               color: Colors.yellow[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const ListTile(
                     title: Text(
-                      'No encuentras lo que estas buscando?',
+                      'NO ENCUENTRAS LO QUE ESTAS BUSCANDO?',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -392,12 +321,11 @@ class _HomePageState extends State<HomePage> {
                           child: new Text('Llevame a un rapimandado especial',
                               style: TextStyle(color: Colors.white)),
                           onPressed: () {
-                            this.rubro = 'especial';
                             Navigator.push(
                                 context,
                                 new MaterialPageRoute(
-                                    builder: (context) =>
-                                        new Rubro(rubro: rubro)));
+                                    builder: (context) => new OrdenEspecial(
+                                        rubro: 'especial', userId: widget.userId)));
                           },
                         ),
                       ],
@@ -421,12 +349,17 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Profile()),
+                  MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                          userId: widget.userId,
+                          mail: widget.mail,
+                          name: widget.name,
+                          tipo: widget.tipo)),
                 );
               },
               child: new UserAccountsDrawerHeader(
-                accountName: Text(name),
-                accountEmail: Text(mail),
+                accountName: Text(widget.name),
+                accountEmail: Text(widget.mail),
                 currentAccountPicture: new CircleAvatar(
                   backgroundColor: Colors.yellow[800],
                   child: new Text('CGCV'),
@@ -435,6 +368,16 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.black,
                 ),
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.black),
+              title: Text('Inicio'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
             ),
             ListTile(
               leading: Icon(Icons.shopping_cart, color: Colors.black),

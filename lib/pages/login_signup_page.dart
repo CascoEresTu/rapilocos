@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rapilocos/services/authentication.dart';
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
+
 //import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginSignUpPage extends StatefulWidget {
@@ -18,7 +20,8 @@ enum FormMode { LOGIN, SIGNUP }
 class _LoginSignUpPageState extends State<LoginSignUpPage> {
   final _formKey = new GlobalKey<FormState>();
   // final userRef = Firestore.instance.collection('users');
-  final userRef = FirebaseDatabase.instance.reference().child('Users');
+  //final userRef = FirebaseDatabase.instance.reference().child('Users');
+  
   String _email;
   String _password;
   String _name;
@@ -56,11 +59,13 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           print(userId);
           widget.auth.sendEmailVerification();
           
-          userRef.child(userId).set({
+          Firestore.instance.collection('Users').document(userId).setData({
             'nombre': this._name,
             'correo': this._email,
             'tipo': 0,
           });
+
+        
 
           _showVerifyEmailSentDialog();
           print('Signed up user: $userId');
