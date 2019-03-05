@@ -15,65 +15,65 @@ class Rubro extends StatefulWidget {
 }
 
 class RubroState extends State<Rubro> {
-  String titulo = '';
+  String _titulo = '';
 
-  String local_a = '';
-  String local_b = '';
-  String local_c = '';
+  String _local_a = '';
+  String _local_b = '';
+  String _local_c = '';
 
-  String asset_a = '';
-  String asset_b = '';
-  String asset_c = '';
-  Color color;
+  String _asset_a = '';
+  String _asset_b = '';
+  String _asset_c = '';
+  Color _color;
 
   @override
   Widget build(BuildContext context) {
     if (widget.rubro == 'restaurantes') {
-      titulo = 'Restaurantes';
-      color = Colors.red[800];
-      local_a = 'Dennys';
-      local_b = 'Wendys';
-      local_c = 'Pizza Hut';
+      _titulo = 'Restaurantes';
+      _color = Colors.red[800];
+      _local_a = 'Dennys';
+      _local_b = 'Wendys';
+      _local_c = 'Pizza Hut';
 
-      asset_a = 'assets/restaurantes/dennys.jpg';
-      asset_b = 'assets/restaurantes/wendys.jpg';
-      asset_c = 'assets/restaurantes/pizza.jpg';
+      _asset_a = 'assets/restaurantes/dennys.jpg';
+      _asset_b = 'assets/restaurantes/wendys.jpg';
+      _asset_c = 'assets/restaurantes/pizza.jpg';
       print(widget.userId);
     } else if (widget.rubro == 'utiles') {
-      titulo = 'Utiles';
-      color = Colors.purple[800];
+      _titulo = 'Utiles';
+      _color = Colors.purple[800];
 
-      local_a = 'Utiles De Honduras';
-      local_b = 'Office Depot';
-      local_c = 'Larach & Cia Office';
+      _local_a = 'Utiles De Honduras';
+      _local_b = 'Office Depot';
+      _local_c = 'Larach & Cia Office';
 
-      asset_a = 'assets/utiles/utilesdeh.png';
-      asset_b = 'assets/utiles/office.jpg';
-      asset_c = 'assets/utiles/larach.png';
+      _asset_a = 'assets/utiles/utilesdeh.png';
+      _asset_b = 'assets/utiles/office.jpg';
+      _asset_c = 'assets/utiles/larach.png';
       print(widget.userId);
     } else if (widget.rubro == 'supermercados') {
-      titulo = 'SuperMercados';
-      color = Colors.green[800];
+      _titulo = 'SuperMercados';
+      _color = Colors.green[800];
 
-      local_a = 'Paiz';
-      local_b = 'La Colonia';
-      local_c = 'Despensa Familiar';
+      _local_a = 'Paiz';
+      _local_b = 'La Colonia';
+      _local_c = 'Despensa Familiar';
 
-      asset_a = 'assets/super/paiz.png';
-      asset_b = 'assets/super/colonia.png';
-      asset_c = 'assets/super/despensa.png';
+      _asset_a = 'assets/super/paiz.png';
+      _asset_b = 'assets/super/colonia.png';
+      _asset_c = 'assets/super/despensa.png';
       print(widget.userId);
     } else if (widget.rubro == 'ferreteria') {
-      titulo = 'Ferreterias';
-      color = Colors.blue[800];
+      _titulo = 'Ferreterias';
+      _color = Colors.blue[800];
 
-      local_a = 'Larach & Cia';
-      local_b = 'INDUFESA';
-      local_c = 'LA MUNDIAL';
+      _local_a = 'Larach & Cia';
+      _local_b = 'INDUFESA';
+      _local_c = 'LA MUNDIAL';
 
-      asset_a = 'assets/ferreteria/larach.png';
-      asset_b = 'assets/ferreteria/indufesa.jpg';
-      asset_c = 'assets/ferreteria/mundial.jpg';
+      _asset_a = 'assets/ferreteria/larach.png';
+      _asset_b = 'assets/ferreteria/indufesa.jpg';
+      _asset_c = 'assets/ferreteria/mundial.jpg';
       print(widget.userId);
     }
 
@@ -94,13 +94,13 @@ class RubroState extends State<Rubro> {
                 MaterialPageRoute(
                     builder: (context) => Orden(
                           rubro: widget.rubro,
-                          local: local_a,
+                          local: _local_a,
                           userId: widget.userId,
                         )),
               );
             },
             child: Card(
-              color: color,
+              color: _color,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),
@@ -109,7 +109,7 @@ class RubroState extends State<Rubro> {
                 children: <Widget>[
                   new ListTile(
                     title: Text(
-                      local_a,
+                      _local_a,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -117,7 +117,7 @@ class RubroState extends State<Rubro> {
                           fontWeight: FontWeight.w900),
                     ),
                   ),
-                  Image.asset(asset_a, fit: BoxFit.cover),
+                  Image.asset(_asset_a, fit: BoxFit.cover),
                   // make buttons use the appropriate styles for cards
                 ],
               ),
@@ -130,13 +130,13 @@ class RubroState extends State<Rubro> {
                 MaterialPageRoute(
                     builder: (context) => Orden(
                           rubro: widget.rubro,
-                          local: local_b,
+                          local: _local_b,
                           userId: widget.userId,
                         )),
               );
             },
             child: Card(
-              color: color,
+              color: _color,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),
@@ -145,7 +145,7 @@ class RubroState extends State<Rubro> {
                 children: <Widget>[
                   new ListTile(
                     title: Text(
-                      local_b,
+                      _local_b,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -153,7 +153,7 @@ class RubroState extends State<Rubro> {
                           fontWeight: FontWeight.w900),
                     ),
                   ),
-                  Image.asset(asset_b, fit: BoxFit.cover),
+                  Image.asset(_asset_b, fit: BoxFit.cover),
                   // make buttons use the appropriate styles for cards
                 ],
               ),
@@ -166,13 +166,13 @@ class RubroState extends State<Rubro> {
                 MaterialPageRoute(
                     builder: (context) => Orden(
                           rubro: widget.rubro,
-                          local: local_c,
+                          local: _local_c,
                           userId: widget.userId,
                         )),
               );
             },
             child: Card(
-              color: color,
+              color: _color,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),
@@ -181,7 +181,7 @@ class RubroState extends State<Rubro> {
                 children: <Widget>[
                   new ListTile(
                     title: Text(
-                      local_c,
+                      _local_c,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -189,7 +189,7 @@ class RubroState extends State<Rubro> {
                           fontWeight: FontWeight.w900),
                     ),
                   ),
-                  Image.asset(asset_c, fit: BoxFit.cover),
+                  Image.asset(_asset_c, fit: BoxFit.cover),
                   // make buttons use the appropriate styles for cards
                 ],
               ),
